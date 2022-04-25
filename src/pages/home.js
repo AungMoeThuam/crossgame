@@ -2,11 +2,9 @@ import { useEffect, useState } from "react";
 import React from "react";
 function Home() {
   let [name, setName] = useState("aung");
+  const [info, setInfo] = useState(true);
 
-  const [score, setScore] = useState([
-    { name: "aung", score: 0 },
-    { name: "lin", score: 0 },
-  ]);
+  const [score, setScore] = useState([]);
 
   const circle = `<svg
 stroke="currentColor"
@@ -68,7 +66,7 @@ xmlns="http://www.w3.org/2000/svg"
       document.getElementById(a)
     );
 
-    if (name == "aung") {
+    if (name == score[0].name) {
       ele.className = "m-1 col-3 bg-warning";
       const e = document.getElementById("show");
 
@@ -94,9 +92,9 @@ xmlns="http://www.w3.org/2000/svg"
       } else if (check(h2) && check(h4) && check(h6)) {
         action();
       } else {
-        setName("lin");
+        setName(score[1].name);
       }
-    } else if (name == "lin") {
+    } else if (name == score[1].name) {
       ele.className = "m-1 col-3 bg-success";
       ele.innerHTML = cross;
 
@@ -117,14 +115,14 @@ xmlns="http://www.w3.org/2000/svg"
       } else if (check2(h2) && check2(h4) && check2(h6)) {
         action();
       } else {
-        setName("aung");
+        setName(score[0].name);
       }
     }
   }
   useEffect(() => {
     const a = document.getElementById("show");
 
-    console.log("a", a.hasChildNodes());
+    // console.log("a", a.hasChildNodes());
   });
   return (
     <div
@@ -137,40 +135,75 @@ xmlns="http://www.w3.org/2000/svg"
       className="container"
     >
       <h1>နှစ်ပေါက်တစ်ပေါက်ဂိမ်း</h1>
-      {score.map((a) => (
-        <h1>
-          {a.name} : {a.score}
-        </h1>
-      ))}
-
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <div id="show"></div>
-        <div style={{ width: "400px" }} className="row">
-          {arr.map((a) => (
-            <div
-              onClick={() => changeColor(a)}
-              id={a}
-              style={{
-                height: "10vh",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-              className="m-1 col-3 bg-primary"
-            ></div>
-          ))}
+      {info ? (
+        <div className="card p-5">
+          <h1 className="card-title">Enter usernames</h1>
+          <input
+            type="text"
+            className="form-control m-1"
+            placeholder="1st UserName"
+            onChange={(e) => {
+              let name = e.target.value;
+              setName(name);
+              setScore([...score, { name, score: 0 }]);
+            }}
+          />
+          <input
+            type="text"
+            className="form-control m-1"
+            placeholder="2nd UserName"
+            onChange={(e) => {
+              let name = e.target.value;
+              setScore([...score, { name, score: 0 }]);
+            }}
+          />
+          <input
+            type="button"
+            className="form-control m-1 bg-warning"
+            value="Start Game"
+            onClick={() => setInfo(false)}
+          />
         </div>
-        <button onClick={() => reSet(arr)} className="btn btn-warning">
-          Reset
-        </button>
-      </div>
+      ) : (
+        <>
+          {score.length > 0
+            ? score.map((a) => (
+                <h1>
+                  {a.name} : {a.score}
+                </h1>
+              ))
+            : "nothng"}
+
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <div id="show"></div>
+            <div style={{ width: "400px" }} className="row">
+              {arr.map((a) => (
+                <div
+                  onClick={() => changeColor(a)}
+                  id={a}
+                  style={{
+                    height: "10vh",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                  className="m-1 col-3 bg-primary"
+                ></div>
+              ))}
+            </div>
+            <button onClick={() => reSet(arr)} className="btn btn-warning">
+              Reset
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 }
